@@ -51,4 +51,4 @@ Les deux notebooks suivent une méthodologie similaire pour la préparation des 
 
 1.  **`Creatinine`** et **`BUN`** (Azote uréique sanguin) : Les deux indicateurs les plus forts.
 2.  **`Urine_Output`** (Débit urinaire) : Fortement corrélé à la fonction rénale.
-3.  **`Protein_in_Urine`** et notre variable `uACR` : Indicateurs importants de dommages rénaux.
+3.  **`Protein_in_Urine`** : Indicateur important de dommages rénaux.
