@@ -1,39 +1,54 @@
-# Kidney Health Prediction Models
+# Modèles de Prédiction de la Santé Rénale
 
-## Project Goal
+## Objectif du Projet
 
-This project explores machine learning models to predict kidney health outcomes based on the `kidney_dataset.csv` dataset. It is divided into two main analysis notebooks:
-1.  **Classification:** To predict the binary status of Chronic Kidney Disease (CKD).
-2.  **Regression:** To predict the Glomerular Filtration Rate (GFR), a key continuous measure of kidney function.
-
----
-
-## Notebooks
-
-### 1. `kidney_function_health_multi_classification_algo.ipynb`
-
-*   **Objective:** This notebook builds and evaluates models to classify whether a patient has Chronic Kidney Disease (`CKD_Status`).
-*   **Models Used:** 
-    *   Logistic Regression
-    *   Decision Tree Classifier
-    *   Random Forest Classifier
-*   **Conclusion:** The **Random Forest Classifier** is recommended as the best model for this medical context. Despite Logistic Regression having a slightly higher overall accuracy, the Random Forest model achieves a perfect **Recall score of 1.0**. This is critical in a diagnostic setting, as it means the model successfully identifies all actual positive cases, minimizing the risk of dangerous false negatives. Furthermore, its feature importance analysis aligns well with clinical understanding of the disease.
-
-### 2. `kidney_function_health_multi_regression_algo.ipynb`
-
-*   **Objective:** This notebook builds and evaluates models to predict the Glomerular Filtration Rate (`GFR`), a continuous value that indicates the level of kidney function.
-*   **Models Used:**
-    *   Linear Regression
-    *   Decision Tree Regressor
-    *   Random Forest Regressor
-*   **Conclusion:** The **Decision Tree Regressor** demonstrates the best predictive performance, achieving the highest R-squared value (**0.9942**) and a low Root Mean Squared Error (RMSE) on the test data. The Random Forest Regressor is a strong alternative, offering more robust and interpretable feature importances that align well with the exploratory data analysis, making it a valuable and reliable model.
+Ce projet explore l'utilisation de modèles de machine learning pour prédire des indicateurs de santé rénale à partir du jeu de données `kidney_dataset.csv`. L'analyse est menée en deux parties distinctes :
+1.  **Classification :** Prédire le statut binaire de la Maladie Rénale Chronique (MRC).
+2.  **Régression :** Prédire le Débit de Filtration Glomérulaire (DFG), une mesure continue essentielle de la fonction rénale.
 
 ---
 
-## Common Data Processing Pipeline
+## Pipeline de Traitement des Données
 
-Both notebooks follow a similar pipeline for data preparation:
-1.  **Data Loading:** The `kidney_dataset.csv` is loaded into a pandas DataFrame.
-2.  **Data Cleaning:** Missing values in the `Medication` column are handled by replacing them with the string 'None'.
-3.  **Feature Engineering:** A `uACR` (urine albumin-to-creatinine ratio) column is created by dividing `Protein_in_Urine` by `Creatinine`, adding a valuable clinical metric to the dataset.
-4.  **Preprocessing:** A `ColumnTransformer` is used to apply `StandardScaler` to all numerical features and `OneHotEncoder` to all categorical features before feeding the data to the models.
+Les deux notebooks suivent une méthodologie similaire pour la préparation des données :
+
+1.  **Chargement des données :** Le fichier `kidney_dataset.csv` est chargé dans un DataFrame pandas.
+2.  **Nettoyage des données :** Les valeurs manquantes (`NaN`) dans la colonne `Medication` sont remplacées par la chaîne de caractères 'None', considérant l'absence de médicament comme une catégorie à part entière.
+3.  **Ingénierie de fonctionnalités (Feature Engineering) :**
+    *   Une nouvelle colonne `uACR` (rapport albumine/créatinine urinaire) est créée. Elle est calculée en divisant `Protein_in_Urine` par `Creatinine`, ajoutant ainsi un indicateur clinique pertinent.
+4.  **Prétraitement et Encodage :**
+    *   Un `ColumnTransformer` est utilisé pour appliquer un prétraitement différencié :
+        *   **Variables Numériques :** Les caractéristiques numériques sont standardisées avec `StandardScaler`.
+        *   **Variables Catégorielles :** Les caractéristiques catégorielles (`Diabetes`, `Hypertension`, `Medication`) sont encodées avec `OneHotEncoder(drop='first')` pour éviter la multicolinéarité.
+
+---
+
+## Analyse et Modèles
+
+### 1. Classification : Prédire le statut de la MRC (`kidney_function_health_multi_classification_algo.ipynb`)
+
+*   **Objectif :** Ce notebook construit et évalue des modèles pour classifier si un patient est atteint de Maladie Rénale Chronique (`CKD_Status`).
+*   **Modèles Évalués :**
+    *   Régression Logistique
+    *   Arbre de Décision (Classification)
+    *   Forêt Aléatoire (Classification)
+*   **Conclusion :** Le **Random Forest Classifier** est le modèle recommandé pour ce contexte médical. Bien que la Régression Logistique ait une précision (accuracy) globale légèrement supérieure, le modèle Random Forest atteint un score de **Rappel (Recall) de 1.0**. C'est un avantage crucial en diagnostic, car cela signifie que le modèle identifie tous les vrais positifs, minimisant le risque de passer à côté d'un patient malade (faux négatif). De plus, son analyse d'importance des caractéristiques est la plus pertinente et équilibrée.
+
+### 2. Régression : Prédire le score DFG (`kidney_function_health_multi_regression_algo.ipynb`)
+
+*   **Objectif :** Ce notebook vise à prédire la valeur du Débit de Filtration Glomérulaire (`GFR`), un indicateur clé de la fonction rénale.
+*   **Modèles Évalués :**
+    *   Régression Linéaire
+    *   Arbre de Décision (Régression)
+    *   Forêt Aléatoire (Régression)
+*   **Conclusion :** Le **Random Forest Regressor** s'avère être le meilleur modèle. Il surpasse les autres avec les métriques de performance les plus élevées (R² de **0.9956**) et l'erreur la plus faible. De plus, son analyse d'importance des caractéristiques est la plus robuste et équilibrée, ce qui en fait le choix le plus fiable et le plus performant pour ce cas d'usage.
+
+---
+
+## Principales Conclusions sur l'Importance des Caractéristiques
+
+À travers les deux analyses (classification et régression), les modèles les plus robustes (Random Forest) ont constamment mis en évidence l'importance d'un groupe de caractéristiques clés pour prédire la santé rénale :
+
+1.  **`Creatinine`** et **`BUN`** (Azote uréique sanguin) : Les deux indicateurs les plus forts.
+2.  **`Urine_Output`** (Débit urinaire) : Fortement corrélé à la fonction rénale.
+3.  **`Protein_in_Urine`** et notre variable `uACR` : Indicateurs importants de dommages rénaux.
